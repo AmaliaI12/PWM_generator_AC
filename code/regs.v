@@ -26,17 +26,18 @@ module regs (
     All registers that appear in this block should be similar to this. Please try to abide
     to sizes as specified in the architecture documentation.
 */
+    // reg variables for counter programming signals
     reg[15:0] reg_period;
     reg reg_en;
     reg reg_count_reset;
     reg reg_upnotdown;
     reg [7:0] reg_prescale;
-
+    // reg variables for PWM signal programming values
     reg reg_pwm_en;
     reg[7:0] reg_functions;
     reg[15:0] reg_compare1;
     reg[15:0] reg_compare2;
-
+    // reg variable for decoder facing signal data_read
     reg[7:0] reg_data_read;
 
     assign period = reg_period;
@@ -76,7 +77,6 @@ module regs (
                     6'h03: reg_compare1[7:0] <= data_write; // LSB
                     6'h05: reg_compare2[7:0] <= data_write; //LSB
                     6'h07: reg_count_reset <= data_write[0];
-                    6'h08: reg_counter_val[7:0] <= data_write; // LSB
                     6'h0A: reg_prescale <= data_write;
                     6'h0B: reg_upnotdown <= data_write[0];
                     6'h0C: reg_pwm_en <= data_write[0];
@@ -84,9 +84,25 @@ module regs (
                     default: ;
                 endcase
             end
+            // Read logic
+            //Todo: Handle read logic for 16 bit registers (MSB/LSB)
+            else if (read) begin
+                case(addr)
+                    6'h00:reg_data_read <= reg_period[7:0]; //reads from LSB section of the register
+                    6'h02:reg_data_read <={7'b0, reg_en};
+                    6'h03:reg_data_read <=reg_compare1[7:0]; //LSB
+                    6'h05:reg_data_read <=reg_compare2[7:0]; //LSB
+                    6'h08:reg_data_read <=counter_val[7:0]; //LSB
+                    6'h0A:reg_data_read <=reg_prescale;
+                    6'h0B:reg_data_read <={7'b0, reg_upnotdown};
+                    6'h0C:reg_data_read <={7'b0, reg_pwm_en};
+                    6'h0D:reg_data_read <= reg_functions;
+                    default: reg_data_read <= 8'h00;
+                endcase
+            end
+            else begin
+                reg_data_read <= 8'h00;
+            end
         end
     end
-
-
-
 endmodule
