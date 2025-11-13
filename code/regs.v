@@ -83,6 +83,7 @@ module regs (
                     6'h0D: reg_functions <= data_write;
                     default: ;
                 endcase
+                reg_data_read <= 8'h00;
             end
             // Read logic
             //Todo: Handle read logic for 16 bit registers (MSB/LSB)
