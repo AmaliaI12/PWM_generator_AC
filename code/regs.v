@@ -22,18 +22,70 @@ module regs (
     output[15:0] compare2
 );
 
-/*
+    /*
     All registers that appear in this block should be similar to this. Please try to abide
     to sizes as specified in the architecture documentation.
 */
-reg[15:0] period;
-always@(posedge clk or negedge rst_n) begin
-    if(!rst_n)
-        period <= 16'h0000;
-    else begin
-        // Here should be the rest of the implementation
+    reg[15:0] reg_period;
+    reg reg_en;
+    reg reg_count_reset;
+    reg reg_upnotdown;
+    reg [7:0] reg_prescale;
+
+    reg reg_pwm_en;
+    reg[7:0] reg_functions;
+    reg[15:0] reg_compare1;
+    reg[15:0] reg_compare2;
+
+    reg[7:0] reg_data_read;
+
+    assign period = reg_period;
+    assign en = reg_en;
+    assign count_reset = reg_count_reset;
+    assign upnotdown = reg_upnotdown;
+    assign prescale = reg_prescale;
+
+    assign pwm_en = reg_pwm_en;
+    assign functions = reg_functions;
+    assign compare1 = reg_compare1;
+    assign compare2 = reg_compare2;
+
+    assign data_read = reg_data_read;
+
+    // Sequential logic
+    always@(posedge clk or negedge rst_n) begin
+        if(!rst_n) begin
+            reg_period <= 16'h0000;
+            reg_en <= 1'b0;
+            reg_count_reset <= 1'b0;
+            reg_upnotdown <= 1'b0;
+            reg_prescale <= 8'h00;
+            reg_pwm_en <= 1'b0;
+            reg_functions <= 8'h00;
+            reg_compare1<= 16'h0000;
+            reg_compare2 <= 16'h0000;
+            reg_data_read <= 8'h00;
+        end else begin
+            // Here should be the rest of the implementation
+            // Write logic
+            //Todo: Handle write logic for 16 bit registers (MSB/LSB)
+            if (write) begin
+                case (addr)
+                    6'h00: reg_period[7:0] <= data_write; //writes to LSB section of the register
+                    6'h02: reg_en <= data_write[0];
+                    6'h03: reg_compare1[7:0] <= data_write; // LSB
+                    6'h05: reg_compare2[7:0] <= data_write; //LSB
+                    6'h07: reg_count_reset <= data_write[0];
+                    6'h08: reg_counter_val[7:0] <= data_write; // LSB
+                    6'h0A: reg_prescale <= data_write;
+                    6'h0B: reg_upnotdown <= data_write[0];
+                    6'h0C: reg_pwm_en <= data_write[0];
+                    6'h0D: reg_functions <= data_write;
+                    default: ;
+                endcase
+            end
+        end
     end
-end
 
 
 
