@@ -69,13 +69,15 @@ module regs (
         end else begin
             // Here should be the rest of the implementation
             // Write logic
-            //Todo: Handle write logic for 16 bit registers (MSB/LSB)
             if (write) begin
                 case (addr)
-                    6'h00: reg_period[7:0] <= data_write; //writes to LSB section of the register
+                    6'h00: reg_period[7:0] <= data_write; //writes to the LSB section of the 16 bit register
+                    6'h01: reg_period[15:8] <= data_write; //writes to the MSB section of the 16 bit register
                     6'h02: reg_en <= data_write[0];
-                    6'h03: reg_compare1[7:0] <= data_write; // LSB
-                    6'h05: reg_compare2[7:0] <= data_write; //LSB
+                    6'h03: reg_compare1[7:0] <= data_write;
+                    6'h04: reg_compare1[15:8] <= data_write;
+                    6'h05: reg_compare2[7:0] <= data_write;
+                    6'h06: reg_compare2[15:8] <= data_write;
                     6'h07: reg_count_reset <= data_write[0];
                     6'h0A: reg_prescale <= data_write;
                     6'h0B: reg_upnotdown <= data_write[0];
@@ -86,18 +88,21 @@ module regs (
                 reg_data_read <= 8'h00;
             end
             // Read logic
-            //Todo: Handle read logic for 16 bit registers (MSB/LSB)
             else if (read) begin
                 case(addr)
-                    6'h00:reg_data_read <= reg_period[7:0]; //reads from LSB section of the register
-                    6'h02:reg_data_read <={7'b0, reg_en};
-                    6'h03:reg_data_read <=reg_compare1[7:0]; //LSB
-                    6'h05:reg_data_read <=reg_compare2[7:0]; //LSB
-                    6'h08:reg_data_read <=counter_val[7:0]; //LSB
-                    6'h0A:reg_data_read <=reg_prescale;
-                    6'h0B:reg_data_read <={7'b0, reg_upnotdown};
-                    6'h0C:reg_data_read <={7'b0, reg_pwm_en};
-                    6'h0D:reg_data_read <= reg_functions;
+                    6'h00: reg_data_read <= reg_period[7:0]; //reads from the LSB section of the 16 bit register
+                    6'h01: reg_data_read <= reg_period[15:8]; //reads from the MSB section of the 16 bit register
+                    6'h02: reg_data_read <={7'b0, reg_en};
+                    6'h03: reg_data_read <=reg_compare1[7:0];
+                    6'h04: reg_data_read <= reg_compare1[15:8];
+                    6'h05: reg_data_read <=reg_compare2[7:0];
+                    6'h06: reg_data_read <= reg_compare2[15:8];
+                    6'h08: reg_data_read <=counter_val[7:0];
+                    6'h09: reg_data_read <= counter_val[15:8];
+                    6'h0A: reg_data_read <=reg_prescale;
+                    6'h0B: reg_data_read <={7'b0, reg_upnotdown};
+                    6'h0C: reg_data_read <={7'b0, reg_pwm_en};
+                    6'h0D: reg_data_read <= reg_functions;
                     default: reg_data_read <= 8'h00;
                 endcase
             end
