@@ -39,6 +39,8 @@ module regs (
     reg[15:0] reg_compare2;
     // reg variable for decoder facing signal data_read
     reg[7:0] reg_data_read;
+    // reg variable to track the 2-cycle duration of the counter reset
+    reg[1:0] count_reset_cycles;
 
     assign period = reg_period;
     assign en = reg_en;
@@ -66,8 +68,10 @@ module regs (
             reg_compare1<= 16'h0000;
             reg_compare2 <= 16'h0000;
             reg_data_read <= 8'h00;
+            count_reset_cycles <= 2'b00;
         end else begin
             // Here should be the rest of the implementation
+
             // Write logic
             if (write) begin
                 case (addr)
@@ -87,6 +91,7 @@ module regs (
                 endcase
                 reg_data_read <= 8'h00;
             end
+
             // Read logic
             else if (read) begin
                 case(addr)
@@ -108,6 +113,18 @@ module regs (
             end
             else begin
                 reg_data_read <= 8'h00;
+            end
+
+            // Counter reset logic
+            if (reg_count_reset && count_reset_cycles == 2'b00) begin
+                count_reset_cycles <= 2'b10;
+            end
+
+            if (count_reset_cycles != 2'b00) begin
+                if (count_reset_cycles == 2'b01)begin
+                    reg_count_reset <= 1'b0;
+                end
+                count_reset_cycles <= count_reset_cycles - 1'b1;
             end
         end
     end
