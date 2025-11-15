@@ -26,6 +26,7 @@ module pwm_gen (
 
     // Combinational logic
     always @(*) begin
+        pwm_next_state = pwm_current_state;
         if (pwm_en) begin
             if (is_unaligned) begin
                 pwm_next_state = (count_val >= compare1) && (count_val < compare2);
@@ -37,9 +38,6 @@ module pwm_gen (
                 pwm_next_state = (count_val >= compare1);
             end
         end
-        else begin
-            pwm_next_state = pwm_current_state;
-        end
     end
 
     // Sequential logic
@@ -48,7 +46,7 @@ module pwm_gen (
             pwm_current_state <= 1'b0;
         end
         else begin
-            pwm_curren_state <= pwm_next_state;
+            pwm_current_state <= pwm_next_state;
         end
     end
 
