@@ -22,7 +22,7 @@ module pwm_gen (
     reg pwm_next_state;
     reg pwm_current_state;
 
-    assign pwm_out = pwm_curr_state;
+    assign pwm_out = pwm_current_state;
 
     // Combinational logic
     always @(*) begin
@@ -38,9 +38,18 @@ module pwm_gen (
             end
         end
         else begin
-            pwm_out_next = pwm_current_state;
+            pwm_next_state = pwm_current_state;
         end
     end
 
+    // Sequential logic
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            pwm_current_state <= 1'b0;
+        end
+        else begin
+            pwm_curren_state <= pwm_next_state;
+        end
+    end
 
 endmodule
