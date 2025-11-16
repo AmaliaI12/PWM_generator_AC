@@ -31,7 +31,7 @@ module regs (
     reg reg_en;
     reg reg_count_reset;
     reg reg_upnotdown;
-    reg [7:0] reg_prescale;
+    reg[7:0] reg_prescale;
     // reg variables for PWM signal programming values
     reg reg_pwm_en;
     reg[7:0] reg_functions;
@@ -56,8 +56,8 @@ module regs (
     assign data_read = reg_data_read;
 
     // Sequential logic
-    always@(posedge clk or negedge rst_n) begin
-        if(!rst_n) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             reg_period <= 16'h0000;
             reg_en <= 1'b0;
             reg_count_reset <= 1'b0;
@@ -82,7 +82,12 @@ module regs (
                     6'h04: reg_compare1[15:8] <= data_write;
                     6'h05: reg_compare2[7:0] <= data_write;
                     6'h06: reg_compare2[15:8] <= data_write;
-                    6'h07: reg_count_reset <= data_write[0];
+                    6'h07: begin
+                        reg_count_reset <= data_write[0];
+                        if (data_write[0]) begin
+                            count_reset_cycles <= 2'b10;
+                        end
+                    end
                     6'h0A: reg_prescale <= data_write;
                     6'h0B: reg_upnotdown <= data_write[0];
                     6'h0C: reg_pwm_en <= data_write[0];
@@ -94,7 +99,7 @@ module regs (
 
             // Read logic
             else if (read) begin
-                case(addr)
+                case (addr)
                     6'h00: reg_data_read <= reg_period[7:0]; //reads from the LSB section of the 16 bit register
                     6'h01: reg_data_read <= reg_period[15:8]; //reads from the MSB section of the 16 bit register
                     6'h02: reg_data_read <={7'b0, reg_en};
@@ -116,12 +121,8 @@ module regs (
             end
 
             // Counter reset logic
-            if (reg_count_reset && count_reset_cycles == 2'b00) begin
-                count_reset_cycles <= 2'b10;
-            end
-
             if (count_reset_cycles != 2'b00) begin
-                if (count_reset_cycles == 2'b01)begin
+                if (count_reset_cycles == 2'b01) begin
                     reg_count_reset <= 1'b0;
                 end
                 count_reset_cycles <= count_reset_cycles - 1'b1;
