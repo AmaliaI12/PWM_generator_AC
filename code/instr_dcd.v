@@ -1,4 +1,5 @@
-  `timescale 1ns / 1ps
+
+`timescale 1ns / 1ps
 
 module instr_dcd(
     // peripheral clock signals
@@ -76,3 +77,5 @@ module instr_dcd(
                 end
             end
         end
+    end
+  endmodule
