@@ -67,4 +67,21 @@ module spi_bridge (
         end
     end
 
+    assign data_in = data_in_reg;
+    assign byte_sync = byte_sync_reg;
+    
+    reg[7:0] shift_reg_out;
+    
+    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n ) begin
+            shift_reg_out <= 0;
+        end else if(cs_sync) begin
+            shift_reg_out <= data_out;
+        end else if(sclk_fall) begin
+            shift_reg_out <= {shift_reg_out[6:0], 1'b0}; 
+        end
+    end
+    
+      assign miso = shift_reg_out[7];
+
 endmodule
