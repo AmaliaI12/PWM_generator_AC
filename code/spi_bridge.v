@@ -36,4 +36,35 @@ module spi_bridge (
         end
     end
 
+    wire sclk_sync = sclk2;
+    wire cs_sync = cs2;    
+    wire sclk_rise = (sclk1 & ~sclk2);
+    wire sclk_fall = (~sclk1 & sclk2);
+    
+    reg [7:0] shift_reg_in;
+    reg [2:0] bit_count; //counts bits recieved
+    reg [7:0] data_in_reg; 
+    reg byte_sync_reg;
+    
+    always @(posedge  clk or negedge rst_n) begin
+        if(!rst_n) begin //reset
+            shift_reg_in <= 0;
+            bit_count <= 0;
+            data_in_reg <= 0;
+            byte_sync_reg <= 0;
+        end else begin
+            byte_sync_reg <= 1'b0;
+            if(cs_sync) begin
+                bit_count  <= 3'b0; //reset counter when cs is inactive
+            end else if(sclk_rise) begin
+                shift_reg_in <= {shift_reg_in[6:0], mosi2};
+                bit_count <= bit_count + 1'b1;
+                if (bit_count == 3'd7) begin
+                    data_in_reg <= {shift_reg_in[6:0], mosi2};
+                    byte_sync_reg <= 1;
+                end
+            end
+        end
+    end
+
 endmodule
