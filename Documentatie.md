@@ -1,7 +1,7 @@
 
 
 
-# SPI Bridge
+# Descrierea modulului *SPI Bridge*
 
 ## 1. Scopul modulului
 
@@ -102,7 +102,7 @@ Decodorul seteaza adresa registrului in functie de bitul **6** sau *high/low*. A
 
 In faza de date, in functie de `write` si `read` (doar unul poate fi activ intr-un anumit moment dat) se realizeaza instructiunea precizata. Pentru `write` enabled, `data_write` ia valoarea trimisa in `data_in` si se realizeaza scrierea in registru, iar pentru `read` enabled i se atribuie semnalului `data_out` valoarea trimisa de registru prin `data_read`.
 
-# Documentația modulului regs.v
+# Descrierea modulului *regs*
 
 ## Introducere
 
@@ -257,7 +257,7 @@ Implementarea modulului *counter* permite numararea crescatoare, prin setarea in
 
 De asemenea, numaratorul are ca sarcina si adaptarea frecventei semnalului PWM la nevoile oricarui caz, independent de clock-ul sistemului. Acest lucru se realizeaza prin **prescalare**. Modulul foloseste o variabila interna pentru a determina cate cicluri de ceas au trecut de la ultima incrementare/decrementare. La fiecare ciclu de ceas contorul intern este incrementat, iar cand acesta ajunge la valoarea `prescale` se realizeaza urmatoarea modificare a variabilei `count_val`.
 
-# Documentația modulului pwm_gen.v
+# Descrierea modulului *pwm_gen*
 
 ## Introducere
 
