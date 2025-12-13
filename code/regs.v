@@ -61,16 +61,19 @@ module regs (
             reg_period <= 16'h0000;
             reg_en <= 1'b0;
             reg_count_reset <= 1'b0;
-            reg_upnotdown <= 1'b0;
+            reg_upnotdown <= 1'b1;
             reg_prescale <= 8'h00;
             reg_pwm_en <= 1'b0;
             reg_functions <= 8'h00;
             reg_compare1<= 16'h0000;
             reg_compare2 <= 16'h0000;
-            reg_data_read <= 8'h00;
             count_reset_cycles <= 2'b00;
         end else begin
             // Here should be the rest of the implementation
+
+            if (count_reset_cycles == 2'b00) begin
+                reg_count_reset <= 1'b0;
+            end
 
             // Write logic
             if (write) begin
