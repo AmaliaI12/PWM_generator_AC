@@ -32,7 +32,7 @@ module pwm_gen (
                 pwm_next_state = (count_val >= compare1) && (count_val < compare2);
             end
             else if (is_aligned_left) begin
-                pwm_next_state = (count_val < compare1);
+                pwm_next_state = (compare1 != 0) && (count_val <= compare1);
             end
             else if (is_aligned_right) begin
                 pwm_next_state = (count_val >= compare1);
