@@ -38,8 +38,9 @@ module spi_bridge (
 
     wire sclk_sync = sclk2;
     wire cs_sync = cs2;    
-    wire sclk_rise = (sclk1 & ~sclk2);
-    wire sclk_fall = (~sclk1 & sclk2);
+    wire sclk_rise =  sclk2 & ~sclk1;
+    wire sclk_fall = ~sclk2 &  sclk1; 
+
     
     reg [7:0] shift_reg_in;
     reg [2:0] bit_count; //counts bits recieved
@@ -55,10 +56,11 @@ module spi_bridge (
         end else begin
             byte_sync_reg <= 1'b0;
             if(cs_sync) begin
-                bit_count  <= 3'b0; //reset counter when cs is inactive
+                bit_count  <= 0; //reset counter when cs is inactive
             end else if(sclk_rise) begin
                 shift_reg_in <= {shift_reg_in[6:0], mosi2};
                 bit_count <= bit_count + 1'b1;
+                
                 if (bit_count == 3'd7) begin
                     data_in_reg <= {shift_reg_in[6:0], mosi2};
                     byte_sync_reg <= 1;
@@ -78,10 +80,11 @@ module spi_bridge (
         end else if(cs_sync) begin
             shift_reg_out <= data_out;
         end else if(sclk_fall) begin
-            shift_reg_out <= {shift_reg_out[6:0], 1'b0}; 
+            shift_reg_out <= {shift_reg_out[6:0], 1'b0};
         end
     end
     
       assign miso = shift_reg_out[7];
+      
 
 endmodule
