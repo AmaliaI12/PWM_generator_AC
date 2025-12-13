@@ -94,31 +94,8 @@ module regs (
                     6'h0D: reg_functions <= data_write;
                     default: ;
                 endcase
-                reg_data_read <= 8'h00;
             end
 
-            // Read logic
-            else if (read) begin
-                case (addr)
-                    6'h00: reg_data_read <= reg_period[7:0]; //reads from the LSB section of the 16 bit register
-                    6'h01: reg_data_read <= reg_period[15:8]; //reads from the MSB section of the 16 bit register
-                    6'h02: reg_data_read <={7'b0, reg_en};
-                    6'h03: reg_data_read <=reg_compare1[7:0];
-                    6'h04: reg_data_read <= reg_compare1[15:8];
-                    6'h05: reg_data_read <=reg_compare2[7:0];
-                    6'h06: reg_data_read <= reg_compare2[15:8];
-                    6'h08: reg_data_read <=counter_val[7:0];
-                    6'h09: reg_data_read <= counter_val[15:8];
-                    6'h0A: reg_data_read <=reg_prescale;
-                    6'h0B: reg_data_read <={7'b0, reg_upnotdown};
-                    6'h0C: reg_data_read <={7'b0, reg_pwm_en};
-                    6'h0D: reg_data_read <= reg_functions;
-                    default: reg_data_read <= 8'h00;
-                endcase
-            end
-            else begin
-                reg_data_read <= 8'h00;
-            end
 
             // Counter reset logic
             if (count_reset_cycles != 2'b00) begin
@@ -129,4 +106,29 @@ module regs (
             end
         end
     end
+
+    // Combinational logic
+    always @(*) begin
+        // Read logic
+        reg_data_read = 8'h00; // prevents latch
+        if (read) begin
+            case (addr)
+                6'h00: reg_data_read = reg_period[7:0]; //reads from the LSB section of the 16 bit register
+                6'h01: reg_data_read = reg_period[15:8]; //reads from the MSB section of the 16 bit register
+                6'h02: reg_data_read ={7'b0, reg_en};
+                6'h03: reg_data_read =reg_compare1[7:0];
+                6'h04: reg_data_read = reg_compare1[15:8];
+                6'h05: reg_data_read =reg_compare2[7:0];
+                6'h06: reg_data_read = reg_compare2[15:8];
+                6'h08: reg_data_read =counter_val[7:0];
+                6'h09: reg_data_read = counter_val[15:8];
+                6'h0A: reg_data_read =reg_prescale;
+                6'h0B: reg_data_read ={7'b0, reg_upnotdown};
+                6'h0C: reg_data_read ={7'b0, reg_pwm_en};
+                6'h0D: reg_data_read = reg_functions;
+                default: reg_data_read = 8'h00;
+            endcase
+        end
+    end
+
 endmodule
