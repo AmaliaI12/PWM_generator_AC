@@ -38,8 +38,8 @@ module spi_bridge (
 
     wire sclk_sync = sclk2;
     wire cs_sync = cs2;    
-    wire sclk_rise =  sclk2 & ~sclk1;
-    wire sclk_fall = ~sclk2 &  sclk1; 
+    wire sclk_rise =  ~sclk2 & sclk1;
+    wire sclk_fall = sclk2 &  ~sclk1; 
 
     
     reg [7:0] shift_reg_in;
