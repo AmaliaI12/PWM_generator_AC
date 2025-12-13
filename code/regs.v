@@ -94,11 +94,10 @@ module regs (
                     6'h0D: reg_functions <= data_write;
                     default: ;
                 endcase
-                reg_data_read <= 8'h00;
             end
 
             // Read logic
-            else if (read) begin
+            if (read) begin
                 case (addr)
                     6'h00: reg_data_read <= reg_period[7:0]; //reads from the LSB section of the 16 bit register
                     6'h01: reg_data_read <= reg_period[15:8]; //reads from the MSB section of the 16 bit register
@@ -115,9 +114,6 @@ module regs (
                     6'h0D: reg_data_read <= reg_functions;
                     default: reg_data_read <= 8'h00;
                 endcase
-            end
-            else begin
-                reg_data_read <= 8'h00;
             end
 
             // Counter reset logic
