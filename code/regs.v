@@ -83,9 +83,12 @@ module regs (
                     6'h05: reg_compare2[7:0] <= data_write;
                     6'h06: reg_compare2[15:8] <= data_write;
                     6'h07: begin
-                        reg_count_reset <= data_write[0];
                         if (data_write[0]) begin
+                            reg_count_reset <= 1'b1;
                             count_reset_cycles <= 2'b10;
+                        end else begin
+                            reg_count_reset    <= 1'b0;
+                            count_reset_cycles <= 2'b00;
                         end
                     end
                     6'h0A: reg_prescale <= data_write;
