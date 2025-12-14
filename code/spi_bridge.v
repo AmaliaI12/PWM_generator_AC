@@ -1,16 +1,15 @@
-`default_nettype none
 `timescale 1ns/1ns
 
 module spi_bridge (
-    input  wire       clk,
-    input  wire       rst_n,
-    input  wire       sclk,
-    input  wire       cs_n,
-    input  wire       mosi,
-    output wire       miso,
-    output wire       byte_sync,
-    output wire [7:0] data_in,
-    input  wire [7:0] data_out
+    input         clk,
+    input         rst_n,
+    input         sclk,
+    input         cs_n,
+    input         mosi,
+    output        miso,
+    output        byte_sync,
+    output  [7:0] data_in,
+    input   [7:0] data_out
 );
 
     // RX
@@ -98,5 +97,3 @@ module spi_bridge (
     assign miso = out_shift_reg[7];
 
 endmodule
-
-`default_nettype wire

@@ -1,20 +1,19 @@
 `timescale 1ns/1ps
-`default_nettype none
 
 module instr_dcd(
     // peripheral clock signals
-    input wire clk,
-    input wire rst_n,
+    input  clk,
+    input  rst_n,
     // towards SPI slave interface signals
-    input wire byte_sync,
-    input wire [7:0] data_in,
-    output wire [7:0] data_out,
+    input  byte_sync,
+    input  [7:0] data_in,
+    output  [7:0] data_out,
     // register access signals
-    output wire read,
-    output wire write,
-    output wire [5:0] addr,
-    input wire [7:0] data_read,
-    outputwire [7:0] data_write
+    output  read,
+    output  write,
+    output  [5:0] addr,
+    input  [7:0] data_read,
+    output  [7:0] data_write
 );
 
     // o sa avem doua stari 0 si 1 
@@ -79,5 +78,3 @@ module instr_dcd(
     end
 
 endmodule
-
-`default_nettype wire
